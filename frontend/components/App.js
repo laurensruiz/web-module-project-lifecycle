@@ -14,17 +14,23 @@ export default class App extends React.Component {
     const {value} = e.target // has to be word value
     this.setState({ ...this.state, todoInput: value})
   }
+//cleanup helpers//
+  resetForm = () => {
+    this.setState({ ...this.state, todoInput:''})
+  }
 
+  setAxiosResponseError = err => {
+    this.setState({ ...this.state, error: err.response.data.message})
+  }
+//cleanup helpers
   postOnSubmit = () =>{
     axios.post(URL, {name: this.state.todoInput})
     .then(res => {
       //debugger
       this.fetchAllTodos()
-      this.setState({ ...this.state, todoInput:''})
+      this.resetForm // a lot cleaner to do this
     })
-    .catch(err => {
-      this.setState({ ...this.state, error: err.response.data.message})
-    })
+    .catch(this.setAxiosResponseError)
   }
 
   onSubmit = e => {
@@ -37,9 +43,8 @@ export default class App extends React.Component {
       //initially put debugger to check response in sources
       this.setState({ ...this.state, todos: res.data.data})
     })
-    .catch(err => {
-      this.setState({ ...this.state, error: err.response.data.message})
-    })
+    .catch(this.setAxiosResponseError)
+    
   }
   componentDidMount(){
     //fetch the todos from the server
