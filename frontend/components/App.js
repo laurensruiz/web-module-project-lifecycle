@@ -14,6 +14,23 @@ export default class App extends React.Component {
     const {value} = e.target // has to be word value
     this.setState({ ...this.state, todoInput: value})
   }
+
+  postOnSubmit = () =>{
+    axios.post(URL, {name: this.state.todoInput})
+    .then(res => {
+      //debugger
+      this.fetchAllTodos()
+      this.setState({ ...this.state, todoInput:''})
+    })
+    .catch(err => {
+      this.setState({ ...this.state, error: err.response.data.message})
+    })
+  }
+
+  onSubmit = e => {
+    e.preventDefault();
+    this.postOnSubmit()
+  }
   fetchAllTodos = () => {
     axios.get(URL)
     .then( res => {
@@ -40,7 +57,7 @@ export default class App extends React.Component {
           })
         }
       </div>
-      <form id= "todoForm">
+      <form id= "todoForm" onSubmit={this.onSubmit}>
         <input value ={this.state.todoInput} onChange={this.onChange} type="text" placeholder='Type your new todo'></input>
         <input type='submit'></input>
         <button>Clear Completed Tasks</button>
