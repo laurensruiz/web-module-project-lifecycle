@@ -7,8 +7,13 @@ export default class App extends React.Component {
   state = {
     todos:[],
     error:'',
+    todoInput: '',
   }
 
+  onChange = e =>{
+    const {value} = e.target // has to be word value
+    this.setState({ ...this.state, todoInput: value})
+  }
   fetchAllTodos = () => {
     axios.get(URL)
     .then( res => {
@@ -27,12 +32,19 @@ export default class App extends React.Component {
     return (
       <div>
         <div id="error">{this.state.error}</div>
+        <div id="todoList">
         <h1> Todo List</h1>
         {
           this.state.todos.map(todo => {
             return <div key= {todo.id}>{todo.name}</div>
           })
         }
+      </div>
+      <form id= "todoForm">
+        <input value ={this.state.todoInput} onChange={this.onChange} type="text" placeholder='Type your new todo'></input>
+        <input type='submit'></input>
+        <button>Clear Completed Tasks</button>
+      </form>
       </div>
     )
   }
