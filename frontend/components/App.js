@@ -8,6 +8,7 @@ export default class App extends React.Component {
     todos:[],
     error:'',
     todoInput: '',
+    displayCompleted: true,
   }
 
   onChange = e =>{
@@ -47,6 +48,20 @@ export default class App extends React.Component {
     .catch(this.setAxiosResponseError)
     
   }
+
+  toggleCompleted = id => e => {
+    axios.patch(`${URL}/${id}`)
+    .then(res =>{
+      //this.fetchAllTodos() multiple requests but lazy
+      this.setState({ 
+        ...this.state, todos: this.state.todos.map( todo => {
+          if(todo.id !== id)
+          return todo
+          return res.data.data
+      })})
+    })
+    .catch(this.setAxiosResponseError)
+  }
   componentDidMount(){
     //fetch the todos from the server
     this.fetchAllTodos()
@@ -59,7 +74,7 @@ export default class App extends React.Component {
         <h1> Todo List</h1>
         {
           this.state.todos.map(todo => {
-            return <div key= {todo.id}>{todo.name}</div>
+            return <div onClick={this.toggleCompleted(todo.id)}key= {todo.id}>{todo.name}{todo.completed? '✔️' : ''}</div>
           })
         }
       </div>
