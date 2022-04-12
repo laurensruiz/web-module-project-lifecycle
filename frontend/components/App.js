@@ -27,8 +27,9 @@ export default class App extends React.Component {
     axios.post(URL, {name: this.state.todoInput})
     .then(res => {
       //debugger
-      this.fetchAllTodos()
-      this.resetForm // a lot cleaner to do this
+      this.setState({...this.state, todos: this.state.todos.concat(res.data.data)}) //check debugger
+      //this.fetchAllTodos() // avoid multiple requests
+      this.resetForm() // a lot cleaner to do this
     })
     .catch(this.setAxiosResponseError)
   }
